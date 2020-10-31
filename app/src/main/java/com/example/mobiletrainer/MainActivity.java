@@ -13,9 +13,11 @@ import com.example.mobiletrainer.Fragments.FragmentMenu;
 import com.example.mobiletrainer.Fragments.FragmentTestNet;
 import com.example.mobiletrainer.Fragments.FragmentTestSensors;
 import com.example.mobiletrainer.Fragments.FragmentWriteData;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
 
     SharedPreferences preferences;
 
+    BottomNavigationView bottomNavigationView;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -77,21 +80,37 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        bottomNavigationView = findViewById(R.id.bottomAppBar);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.page_1:{
+                        replaceFragment(fragmentMenu, false);
+                        break;
+                    }
+                    case R.id.page_2:{
+                        replaceFragment(fragmentTestSensors,false);
+                        break;
+                    }
+                    case  R.id.page_3:{
+                        replaceFragment(fragmentTestNet, false);
+                        break;
+                    }
+                }
+
+                return false;
             }
         });
-        fab.hide();
+
+
 
         checkFolder();
 
         preferences = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         loadPreferences();
-
 
         fragmentMenu = new FragmentMenu();
         fragmentTestSensors = new FragmentTestSensors();
@@ -173,6 +192,22 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
                 replaceFragment(fragmentTestSensors);
                 break;
             }
+
+  /*          case FragmentCallback.BTN_HOME:{
+                replaceFragment(fragmentMenu, false);
+                break;
+            }
+
+            case FragmentCallback.BTN_DASHBOARD:{
+                replaceFragment(fragmentTestSensors,false);
+                break;
+            }
+
+            case FragmentCallback.BTN_NOTIFICATIONS:{
+                replaceFragment(fragmentTestNet, false);
+                break;
+            }*/
+
         }
     }
 
@@ -181,6 +216,16 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void replaceFragment(Fragment fragment, boolean addToBackStack){
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        transaction.replace(R.id.container, fragment);
+        if (addToBackStack){
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 
