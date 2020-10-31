@@ -9,10 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.mobiletrainer.Fragments.FragmentCallback;
+import com.example.mobiletrainer.Fragments.FragmentCards;
 import com.example.mobiletrainer.Fragments.FragmentMenu;
 import com.example.mobiletrainer.Fragments.FragmentTestNet;
 import com.example.mobiletrainer.Fragments.FragmentTestSensors;
 import com.example.mobiletrainer.Fragments.FragmentWriteData;
+import com.example.mobiletrainer.RecyclerCards.Callback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,7 +35,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
-public class MainActivity extends AppCompatActivity implements FragmentCallback {
+public class MainActivity extends AppCompatActivity implements FragmentCallback, Callback {
 
     /**Основная активность приложения
      * Осуществляет переключение между фаргментами
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
     FragmentTestSensors fragmentTestSensors;
     FragmentWriteData fragmentWriteData;
     FragmentTestNet fragmentTestNet;
+    FragmentCards fragmentCards;
 
     FragmentTransaction transaction;
 
@@ -92,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
                         break;
                     }
                     case R.id.page_2:{
-                        replaceFragment(fragmentTestSensors,false);
+                        replaceFragment(fragmentCards,false);
                         break;
                     }
                     case  R.id.page_3:{
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
         fragmentTestSensors = new FragmentTestSensors();
         fragmentWriteData = new FragmentWriteData();
         fragmentTestNet = new FragmentTestNet();
+        fragmentCards = new FragmentCards();
 
         transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.container, fragmentMenu);
@@ -241,5 +245,10 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback 
                 Toast.makeText(getApplicationContext(),"Не удалось создать папку :(",Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    public void ReturnCardPosition(int position) {
+        Toast.makeText(getApplicationContext(),position, Toast.LENGTH_LONG).show();
     }
 }
