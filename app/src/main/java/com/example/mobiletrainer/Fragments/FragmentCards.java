@@ -167,7 +167,7 @@ public class FragmentCards extends FragmentSensorSmart  {
             }
 
             case Constants.HAND_ROTATION:{
-                increaseExercise("Вращение рукуами");
+                increaseExercise("Вращение руками");
                 break;
             }
             case Constants.LUNGE:{
