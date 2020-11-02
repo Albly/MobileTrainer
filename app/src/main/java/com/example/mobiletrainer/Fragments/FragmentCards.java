@@ -155,6 +155,22 @@ public class FragmentCards extends FragmentSensorSmart  {
         }
     }
 
+    public void onResume(){
+        super.onResume();
+        addCard("Вращение руками", 10,20);
+
+        addCard("Выпады", 3,20);
+
+        addCard("Отжимания", 15,20);
+
+        addCard("Подъемы руками", 8,20);
+
+        addCard("Пресс", 10,20);
+
+        addCard("Приседания", 10,20);
+        addCard("Прыжок", 3,20);
+    }
+
     public void updateUIwithResult(int result){
         /**Применяет результат классификации к интерфейсу*/
         //TODO: Use strings res instead of Strings
