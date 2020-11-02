@@ -12,6 +12,7 @@ public class Constants {
     public static final String NETWORK_FILE ="model.pt";
 
 
+    //TODO: Use Enums
     public static final int HAND_ROTATION = 0;
     public static final int LUNGE = 1;
    // public static final int BENDS_WITH_HANDS =2;

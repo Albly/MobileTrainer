@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -83,6 +82,7 @@ public final class FragmentWriteData extends FragmentSensorSmart {
                              Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
 
+        // UI компоненты
         View parent = inflater.inflate(R.layout.fragment_write_data, container, false);
         sw_lock = parent.findViewById(R.id.sv_lock);
         sw_start = parent.findViewById(R.id.sw_start);
@@ -91,6 +91,7 @@ public final class FragmentWriteData extends FragmentSensorSmart {
         tv_count.setText(String.valueOf(CSV.getFileCount()));
         rg_group = parent.findViewById(R.id.rg_group);
 
+        // Защита от случайных нажатий. Не дает переключить вид записываемого упражнения
         sw_lock.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -108,19 +109,34 @@ public final class FragmentWriteData extends FragmentSensorSmart {
         super.onSensorChanged(sensorEvent);
 
         //TODO Переместить в обработку нажатия кнопки
+        //Проверяем наличие данных на акселерометре
+
         if(sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION){
+            //Проверяем состояние выключателя "начать тренировку"
             if(sw_start.isChecked()){
-                if(!isWriting && (findRotationGrow() || findGrow())){
+                // Условие начала упражнения: Упраженение еще не начато (данные не пишутся в лист)
+                // И зафиксированно превышение амплитуды интегральным фильтром
+                if(!isWriting &&  findGrow()){
+                    //Флаг, что данные пишутся
                     isWriting = true;
-                    meow();
+                    //воспроизвести звук начала упражнения
+                    soundStart();
                 }
 
-                if(isWriting && findRotationRow() && findRow()){
+                // Проверяем условие конца упражнения: Данные пишутся в лист и
+                // зафиксирована стабилизация амплутуды интегральным фильтром
+                if(isWriting && findRow()){
+                    // Флаг, что данные больше не пишутся
                     isWriting = false;
-                    kok();
+                    //воспроизводим звук конца упражнения
+                    soundEnd();
+                    //Записываем всё в CSV файл
                     listToCSV();
+                    //очищаем массивы
                     clearArrays();
+                    //Подстчёт количества записанных файлов
                     CSV.increment_count();
+                    //Обновляем UI
                     updateUI();
                 }
             }
@@ -133,6 +149,7 @@ public final class FragmentWriteData extends FragmentSensorSmart {
     }
 
     public int getSelectedExercise(){
+        /**Возвращет элекмент, который был выбран в списке (Назание упражнения)*/
         int radioButtonID = rg_group.getCheckedRadioButtonId();
         View radioButton = rg_group.findViewById(radioButtonID);
         int idx = rg_group.indexOfChild(radioButton);
@@ -140,7 +157,7 @@ public final class FragmentWriteData extends FragmentSensorSmart {
     }
 
     public void listToCSV(){
-
+        // Анализауем данные и пишем их в CSV
         int selectedExercise = getSelectedExercise();
         analyze(accelList, N0, Sensor.TYPE_ACCELEROMETER, selectedExercise);
         analyze(rotationList, N0, Sensor.TYPE_GAME_ROTATION_VECTOR,selectedExercise);
@@ -151,7 +168,8 @@ public final class FragmentWriteData extends FragmentSensorSmart {
 
     }
 
-    public void kok(){
+    public void soundEnd(){
+        //Звук конца упражнения
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -161,7 +179,8 @@ public final class FragmentWriteData extends FragmentSensorSmart {
         }).start();
     }
 
-    public void meow(){
+    public void soundStart(){
+        // Звук начала упражнения
         new Thread(new Runnable() {
             @Override
             public void run() {

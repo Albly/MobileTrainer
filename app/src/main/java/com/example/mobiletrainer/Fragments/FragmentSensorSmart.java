@@ -43,6 +43,7 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
     ArrayList<double[]> angleShiftList;
 
     /**===========================================================================================*/
+    //Количество новых отсчётов при интерполяции
     final int N0 = 128;
 
     /** Фильтр для анализа линейного ускорения*/
@@ -77,7 +78,7 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (isWriting) {
@@ -100,6 +101,7 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
     }
 
     void writeToList(){
+        /**Добавляем в листы текущщие значения с датчиков*/
         accelList.add(accelerometerComponents);
         gyroList.add(gyroscopeComponents);
         gravityList.add(gravityComponents);
@@ -110,6 +112,8 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
 
     void writeToListFilter(){
         writeToList();
+
+        /**Смотрим чтобы размер листа не превысил нужный. Иначе удаляем лишние элементы*/
         if(accelList.size() > REAL_LINER_FILTER_SIZE) {accelList.remove(0);}
         if(gyroList.size() > REAL_LINER_FILTER_SIZE) {gyroList.remove(0);}
         if(gravityList.size() > REAL_LINER_FILTER_SIZE) {gravityList.remove(0);}
@@ -170,6 +174,7 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
 
     public boolean findRotationRow(){
         for (int i = 0 ; i < 3; i++){
+
             double delta = Math.abs(gyroscopeComponents[i] - gyroscopePrev[i]);
 
             if(delta < 0.08){
@@ -194,9 +199,11 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
     public boolean findGrow(){
         // Если более чем 35 значений подходят по условию из 49
         for(int i = 49; i > 0;i --){
+            //Значения фильтра больше порога
             if( linearFilter.get(i) > 2.0 ){
                 counter++;
             }
+            // Если значения фильтра были превышены 35 раз
             if( counter > 35 ){
                 counter = 0;
                 return true;
@@ -226,24 +233,8 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
     }
 
 
-    /*
-    boolean findGrow(){
-        for (int i = LINEAR_FILTER_SIZE; i > 0 ; i-- ){
-            if(linearFilter.get(i) > LINEAR_GROW_THRESHOLD){
-                counter++;
-            }
-            if(counter > Math.round(LINEAR_FILTER_SIZE * PERCENT_OF_GROW_FILTER / 100.0){
-                return true;
-            }
-        }
-        counter = 0;
-        return false;
-    }
-
-
-*/
-
     void initArrays(){
+        /**Создание массивов*/
 
         accelList = new ArrayList<>();
         gyroList = new ArrayList<>();
@@ -257,6 +248,7 @@ abstract public class FragmentSensorSmart extends FragmentSensor {
     }
 
     public void clearArrays(){
+        /**Очистка массивов*/
 
         accelList.clear();
         gyroList.clear();

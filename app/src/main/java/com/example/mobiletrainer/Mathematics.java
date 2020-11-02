@@ -20,7 +20,9 @@ public class Mathematics {
 
 
     public static float[] processData(ArrayList<double[]> data, int N0){
+        /**Функция обработки данных*/
 
+        // компоненты датичков
         double[] x = new double[data.size()];
         double[] y = new double[data.size()];
         double[] z = new double[data.size()];
@@ -46,6 +48,7 @@ public class Mathematics {
         y = normaliziation(y, maxValue);        // Нормируем на максимальное значение y
         z = normaliziation(z, maxValue);        // Нормируем на максимальное значение z
 
+        // оставляем только первые 15 значенй FFT
         x = cutArray(x,15);
         y = cutArray(y, 15);
         z = cutArray(z, 15);
@@ -78,6 +81,7 @@ public class Mathematics {
             z[i] = xyz[2];                      // вытаскиваем из массива все z
         }
 
+        //Записываем данные в CSV (без обработки)
         CSV.writeToCsv(x,y,z,sensor,typeOfExercise,false);
 
         x = interpolate(x, N0);                 // интерполируем х
@@ -94,10 +98,12 @@ public class Mathematics {
         y = normaliziation(y, maxValue);        // Нормируем на максимальное значение y
         z = normaliziation(z, maxValue);        // Нормируем на максимальное значение z
 
+        // оставляем только первые 15 значенй FFT
         x = cutArray(x,15);
         y = cutArray(y, 15);
         z = cutArray(z, 15);
 
+        //Записываем данные в CSV (с обработкой)
         CSV.writeToCsv(x,y,z,sensor,typeOfExercise,true);
     }
 

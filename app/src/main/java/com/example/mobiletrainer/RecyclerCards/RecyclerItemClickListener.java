@@ -8,6 +8,9 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener{
+    /**Обработка нажаний на карточку. Не релизовано*/
+    //TODO: Реализовать обработку нажатий на карточки.
+    // Надо окрывать фрагмент с графиками активности и статистикой
 
     public interface OnItemClickListener{
         void onItemClick(View view, int position);

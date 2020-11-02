@@ -41,12 +41,13 @@ public final class FragmentMenu extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //инициализируем UI компоненты
         View parent = inflater.inflate(R.layout.fragment_menu, container, false);
         btn_testNet = parent.findViewById(R.id.btn_net);
         btn_writeData = parent.findViewById(R.id.btn_dataset);
         btn_sensors = parent.findViewById(R.id.btn_sensors);
 
-
+        //добавляем прослушивание событий на кнопках
         btn_testNet.setOnClickListener(this);
         btn_writeData.setOnClickListener(this);
         btn_sensors.setOnClickListener(this);
@@ -56,6 +57,7 @@ public final class FragmentMenu extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
+        /**Обработка нажатий и оповещение активности*/
         switch (view.getId()){
             case R.id.btn_dataset:{
                 callback.getPressedButton(FragmentCallback.BTN_WRITE_DATASET);

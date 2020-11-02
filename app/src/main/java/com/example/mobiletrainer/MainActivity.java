@@ -83,8 +83,9 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //TODO Bottom nav bar Не используется, скрыт.
         bottomNavigationView = findViewById(R.id.bottomAppBar);
-
+        bottomNavigationView.setVisibility(View.GONE);
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -108,23 +109,26 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
             }
         });
 
-
-
+        //проверяем наличие папки и создаем,если её нет
         checkFolder();
 
+        //загрузка данных
         preferences = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         loadPreferences();
 
+        // Инициализаия фрагментов
         fragmentMenu = new FragmentMenu();
         fragmentTestSensors = new FragmentTestSensors();
         fragmentWriteData = new FragmentWriteData();
         fragmentTestNet = new FragmentTestNet();
         fragmentCards = new FragmentCards();
 
+        // Вывод фрагмента на экран
         transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.container, fragmentMenu);
         transaction.commit();
 
+        // Проверяем наличие разрешенией. Запрашиваем подтверждения.
         verifyStoragePermissions(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -140,16 +144,19 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
     }
 
     private void loadPreferences() {
+        //Загрузка количества файлов для датасета
         CSV.setFileCount(preferences.getInt(Constants.APP_PREFERENCES_FILE_COUNT,0));
     }
 
     private void savePreferences(){
+        //Сохранение количества файлов для датасета
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(Constants.APP_PREFERENCES_FILE_COUNT,CSV.getFileCount());
         editor.apply();
     }
 
     private void resetPreferences(){
+        //Удаление количества файлов для датасета
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(Constants.APP_PREFERENCES_FILE_COUNT);
         editor.apply();
@@ -164,13 +171,10 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //TODO: Strings -->> resources strings
             Toast.makeText(getApplicationContext(),"Файлы будут перезаписаны", Toast.LENGTH_LONG).show();
             resetPreferences();
             CSV.setFileCount(0);
@@ -182,10 +186,11 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
 
     @Override
     public void getPressedButton(String tag) {
+        /**обработка  нажатий кнопок в фрагментах*/
 
         switch (tag){
             case FragmentCallback.BTN_TEST:{
-                replaceFragment(fragmentTestNet);
+                replaceFragment(fragmentCards);
                 break;
             }
             case FragmentCallback.BTN_WRITE_DATASET:{
@@ -197,25 +202,11 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
                 break;
             }
 
-  /*          case FragmentCallback.BTN_HOME:{
-                replaceFragment(fragmentMenu, false);
-                break;
-            }
-
-            case FragmentCallback.BTN_DASHBOARD:{
-                replaceFragment(fragmentTestSensors,false);
-                break;
-            }
-
-            case FragmentCallback.BTN_NOTIFICATIONS:{
-                replaceFragment(fragmentTestNet, false);
-                break;
-            }*/
-
         }
     }
 
     public void replaceFragment(Fragment fragment){
+        /**Заменяет фрагмент на экране. Добавляет изменение в backStack*/
         transaction = getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.replace(R.id.container, fragment);
@@ -224,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
     }
 
     public void replaceFragment(Fragment fragment, boolean addToBackStack){
+        /**Заменяет фрагмент на экране*/
         transaction = getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.replace(R.id.container, fragment);
@@ -234,7 +226,8 @@ public class MainActivity extends AppCompatActivity implements FragmentCallback,
     }
 
     public void checkFolder() {
-
+        //Проверяем наличие папки для записи файлов. Если её нет - создаём.
+        // TODO: Strings -->> resources string
         File f = new File(Environment.getExternalStorageDirectory(), Constants.APP_FOLDER_NAME);
         if (!f.exists()) {
             boolean isSuccessful = f.mkdirs();

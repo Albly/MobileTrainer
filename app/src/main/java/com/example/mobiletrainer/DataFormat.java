@@ -5,11 +5,8 @@ public class DataFormat {
     /**Функции для преобрзования форматов */
 
 
-
-
-
     /**
-     * Из массива данных делает строку с отступами для вывода в textView
+     * Из массива данных делает строку с отступами для вывода в textView (FragmentTestNet)
      * РАЗМЕР МАССИВА = 3 !
      * */
    public static String prepareData(double[] data){

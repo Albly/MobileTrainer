@@ -13,7 +13,6 @@ public class Utils {
 
     /** Чтение файла со структурой нейросети */
 
-
     public static String assetFilePath(Context context, String assetName) {
         File file = new File(context.getFilesDir(), assetName);
 

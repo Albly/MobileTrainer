@@ -24,17 +24,21 @@ public abstract class FragmentSensor extends Fragment implements SensorEventList
      * */
 
     SensorManager manager;
+    // Датчики
     Sensor accelerometer, gyroscope, gravity, rotation, linear;
 
+    // Наличие датчиков на устройстве
     boolean isAccel = true, isGyro = true, isGravity = true, isLinear = true, isRotation = true;
 
+    // Сюда записываются данные, когда они приходят с датчиков
     double[] gravityComponents = new double[3];
     double[] accelerometerComponents = new double[3];
     double[] gyroscopeComponents = new double[3];
     double[] rotationComponents = new double[3];
     double[] linearComponents = new double[3];
 
-
+    // Данные матрицы вращения
+    // TODO: Это экспериментальные переменные. Определиться нужны или нет.
     private final float[] rotationMatrix = new float[16];
     private final float[] prevRotationMatrix = new float[16];
     private final float[] angleShiftBetweenMatrix = new float[3];
@@ -46,10 +50,10 @@ public abstract class FragmentSensor extends Fragment implements SensorEventList
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         /**Регистрация всех датчиков*/
-        manager = (SensorManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SENSOR_SERVICE);
+        manager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
 
         if (manager!=null){
-
+            /**Проверяем наличие датчиков*/
             accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             if (accelerometer==null){
                 isAccel = false;
@@ -83,12 +87,13 @@ public abstract class FragmentSensor extends Fragment implements SensorEventList
             }
 
         }
-
+        // для наследников этого класса
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onResume() {
+        /**Слушаем датчики*/
         super.onResume();
 
         if (isAccel) {
@@ -173,6 +178,7 @@ public abstract class FragmentSensor extends Fragment implements SensorEventList
 
     @Override
     public void onPause(){
+        /**Перестаем слушать датчики*/
         super.onPause();
 
         if(isAccel && isGyro && isGravity){

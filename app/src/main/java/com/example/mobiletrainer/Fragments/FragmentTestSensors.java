@@ -23,7 +23,7 @@ import static com.example.mobiletrainer.DataFormat.prepareData;
 
 public final class FragmentTestSensors extends FragmentSensor {
 
-    /**Фрагмент, отображающий данные датчиков в textView*/
+    /**Фрагмент, просто отображающий данные датчиков*/
 
     CheckBox cb_Accel, cb_Gyro, cb_Gravity, cb_Rotation, cb_Linear;
     TextView tv_Accel, tv_Gyro, tv_Gravity, tv_Rotation, tv_Linear, tv_AbsRot;
@@ -40,11 +40,12 @@ public final class FragmentTestSensors extends FragmentSensor {
     public void onResume() {
         super.onResume();
 
+        //Обновляем UI с с периодом 200 мс
         timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                        updateUI();
@@ -63,6 +64,7 @@ public final class FragmentTestSensors extends FragmentSensor {
     }
 
     private void updateUI(){
+        /**Обновляем UI*/
         tv_Accel.setText(prepareData(accelerometerComponents));
         tv_Gyro.setText(prepareData(gyroscopeComponents));
         tv_Gravity.setText(prepareData(gravityComponents));
@@ -79,6 +81,7 @@ public final class FragmentTestSensors extends FragmentSensor {
                              Bundle savedInstanceState) {
         View parent = inflater.inflate(R.layout.fragment_test_sensors, container, false);
 
+        //инициализация UI компонентов
         cb_Accel = parent.findViewById(R.id.cb_accel);
         cb_Gravity = parent.findViewById(R.id.cb_gravity);
         cb_Gyro = parent.findViewById(R.id.cb_gyro);

@@ -17,8 +17,10 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RVAdapter extends StatefulRecyclerView.Adapter<RVAdapter.CardViewHolder> {
+    /**Адаптер для RecyclerView*/
 
     private Context context;
+    // Лист с карточками
     private List<Card> cards;
     public int position=1;
     public RVAdapter(List<Card> cards){
@@ -46,10 +48,14 @@ public class RVAdapter extends StatefulRecyclerView.Adapter<RVAdapter.CardViewHo
 
     @Override
     public void onBindViewHolder(final CardViewHolder holder, int position) {
+        // Устаналиваем заголовок
         holder.tv_name.setText(cards.get(position).getTitle_exercise());
+        // устанавливаем строку с количеством повторений, которое надо сделать
         holder.tv_hint.setText(cards.get(position).getHint());
+        // Устанавлием прогресс прогрессбара с анимацией в 1300 мс
         holder.pb_progress.setProgressWithAnimation(cards.get(position).getProgress(), (long) 1300);
-
+        // Записываем положение карточки
+        cards.get(position).setPosition(position);
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -72,7 +78,7 @@ public class RVAdapter extends StatefulRecyclerView.Adapter<RVAdapter.CardViewHo
 
     public Card getItem(int position){
         return cards.get(position);
-        //TODO NULL
+        //TODO Не используется
     }
 
 
@@ -86,6 +92,7 @@ public class RVAdapter extends StatefulRecyclerView.Adapter<RVAdapter.CardViewHo
 
         CardViewHolder(View item, Context context) {
             super(item);
+            // Инициализация UI объектов каждой карточки
             cardView = (CardView) item.findViewById(R.id.cv);
 
             tv_name = (TextView) item.findViewById(R.id.tv_name);
@@ -99,6 +106,7 @@ public class RVAdapter extends StatefulRecyclerView.Adapter<RVAdapter.CardViewHo
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             if(context!=null){
+                //TODO: Strings -->> res strings
                 menu.setHeaderTitle(context.getResources().getString(R.string.choose_action));
                 menu.add(context.getResources().getString(R.string.delete));
             }

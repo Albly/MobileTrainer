@@ -29,8 +29,10 @@ public class CSV {
     public static void increment_count(){count++;}
 
    static String setFileName(int sensor, int typeOfExercise, boolean isProcessed){
+        //Устанавливает имя файла
         switch (sensor){
             case Sensor.TYPE_ACCELEROMETER:{
+                // Мы пишем данные и с обработкой и без неё.
                 return typeOfExercise + (isProcessed ? "_A_" : "_XA_") ;
             }
             case  Sensor.TYPE_LINEAR_ACCELERATION:{
@@ -46,6 +48,7 @@ public class CSV {
                 return typeOfExercise + (isProcessed ? "_R_": "_XR_");
             }
 
+            // Это наш преобразованный датчик
             case -10001: {
                 return typeOfExercise + (isProcessed ? "_Z_": "_XZ_");
 
@@ -54,18 +57,19 @@ public class CSV {
         return "NULL";
     }
 
-
     public static void writeToCsv(double[] x, double[] y, double[] z , int sensor, int typeOfExercise, boolean isProcessed) {
-
+    /**Запись данных в CSV файл*/
+        //имя файла
         String name = setFileName(sensor,typeOfExercise,isProcessed) + "("+count+")";
         //count++;
 
+        // Путь файла
         String csv = (Environment.getExternalStorageDirectory() + "/" + Constants.APP_FOLDER_NAME+"/" + name + ".csv");
         Log.i("================",csv);
 
 
         ArrayList<String[]> strings = new ArrayList<>();
-        strings.add(new String[]{"n","x","y","z","val"}); // заголовок
+        strings.add(new String[]{"n","x","y","z","val"}); // заголовок CSV
 
         // Преобразуем массив чисел в массив строк
         int size = x.length;
